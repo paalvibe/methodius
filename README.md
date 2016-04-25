@@ -1,0 +1,2 @@
+# methodius
+Srt translation tool
