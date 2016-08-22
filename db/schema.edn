@@ -1,0 +1,402 @@
+[
+ ;; enum attributes
+ ;; there are none - all simple enum values are represented as
+ ;; entities in the data partition w/ :db/ident
+
+ ;; super-enum attributes
+ ;; all super-enum values are represented as entities in the
+ ;; data partition w/ :db/ident and one of the following name
+ ;; attributes
+
+ ;; language attributes
+ {:db/id #db/id[:db.part/db]
+  :db/ident :language/name
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/value
+  :db/doc "The name of the language"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :language/code
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/value
+  :db/doc "The code of the language e.g. nb_NO, en_US"
+  :db.install/_attribute :db.part/db}
+
+  ;; fromLanguage attributes
+  {:db/id #db/id[:db.part/db]
+  :db/ident :fromLanguage/code
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/value
+  :db/doc "The code of the translated from language e.g. nb_NO, en_US"
+  :db.install/_attribute :db.part/db}
+
+  ;; toLanguage attributes
+  {:db/id #db/id[:db.part/db]
+  :db/ident :toLanguage/code
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/value
+  :db/doc "The code of the translated-to language e.g. nb_NO, en_US"
+  :db.install/_attribute :db.part/db}
+
+ ;; movie attributes
+ {:db/id #db/id[:db.part/db]
+  :db/ident :movie/id
+  :db/valueType :db.type/uuid
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/index true
+  :db/doc "A unique ID for each movie"
+  :db.install/_attribute :db.part/db}
+ 
+ {:db/id #db/id[:db.part/db]
+  :db/ident :movie/name
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/value
+  :db/index true
+  :db/doc "The globally unique name for a movie"
+  :db.install/_attribute :db.part/db}
+
+ ;; srt attributes
+ {:db/id #db/id[:db.part/db]
+  :db/ident :srt/id
+  :db/valueType :db.type/uuid
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/index true
+  :db/doc "The unique id for an srt"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :srt/language
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "The language of this srt"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :srt/movie
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "The movie of this srt"
+  :db.install/_attribute :db.part/db}
+
+ ;; A slide is a single presentation of text in a movie, normally including two lines
+ ;; slide attributes
+{:db/id #db/id[:db.part/db]
+  :db/ident :slide/id
+  :db/valueType :db.type/uuid
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/index true
+  :db/doc "The unique id for a slide."
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :slide/srt
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "The srt of this slide"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :srt/pos
+  :db/valueType :db.type/long
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/index true
+  :db/doc "The sequential position of the slide in the srt"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :slide/text
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "The full text of this slide"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :srt/startTime
+  :db/valueType :db.type/instant
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/index true
+  :db/doc "The start time of the slide"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :srt/endTime
+  :db/valueType :db.type/instant
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/index true
+  :db/doc "The end time of the slide"
+  :db.install/_attribute :db.part/db}
+
+ ;; An expression is a sentence, which may or may not traverse multiple slides
+ ;; expression attributes
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expression/id
+  :db/valueType :db.type/uuid
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/index true
+  :db/doc "The unique id for an expression."
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expression/srt
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "The srt of this expression"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expression/pos
+  :db/valueType :db.type/long
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/index true
+  :db/doc "The sequential position of the expression in the startSlide"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expression/text
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "The full text of this expression"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expression/startSlide
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "The slide on which this expressions starts"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expression/endSlide
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "The slide on which this expressions ends"
+  :db.install/_attribute :db.part/db}
+
+;; A generalized expression has replaced names and other generalizable words
+;; with placeholder for better translation matching.
+ ;; expression attributes
+ {:db/id #db/id[:db.part/db]
+  :db/ident :generalizedExpression/id
+  :db/valueType :db.type/uuid
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/index true
+  :db/doc "The unique id for a generalized expression."
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :generalizedExpression/expression
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "The originating expression of this generalized expression"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :generalizedExpression/text
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "The full text of this generalized expression including placeholder"
+  :db.install/_attribute :db.part/db}
+
+]
+
+;; An expressionTranslation is a translation of single expression.
+ ;; stringLink attributes
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expressionTranslation/id
+  :db/valueType :db.type/uuid
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/index true
+  :db/doc "The unique id for an expression translation."
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expressionTranslation/fromLanguage
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "The from language of this translation"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expressionTranslation/toLanguage
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "The to language of this translation"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expressionTranslation/fromText
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "The from text of this translation"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expressionTranslation/toText
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "The to text of this translation"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expressionTranslation/toText
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/doc "The to text of this translation"
+  :db.install/_attribute :db.part/db}
+
+;; An expressionTranslationSource is the source of a translation of single expression.
+;; Can be manually approved, google translation.
+ ;; stringLink attributes
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expressionTranslationSource/id
+  :db/valueType :db.type/uuid
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/index true
+  :db/doc "The unique id for an expression translation source."
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db -1]
+  :db/ident :expressionTranslationSource/translationOrigin
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "An artist's country of residence"
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/user -2]
+  :db/ident :translationOrigin/google}
+
+ {:db/id #db/id[:db.part/user -3]
+:db/ident :translationOrigin/manuallyApproved}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expressionTranslationSource/movie
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "The movie of this translation source."
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :expressionTranslationSource/user
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "The movie of this translation source."
+  :db.install/_attribute :db.part/db}
+
+  ;; users and groups
+  ;; inspired by http://docs.neo4j.org/chunked/stable/cypher-cookbook-hyperedges.html
+ {:db/id #db/id[:db.part/db]
+  :db/ident :group/name
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :user/name
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :role/name
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :roleInGroup/name
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :groups
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/many
+  :db.install/_attribute :db.part/db
+  :db/doc "A user's reference to a group"}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :hasRoleInGroups
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/many
+  :db.install/_attribute :db.part/db
+  :db/doc "A user's reference to a role in a group"}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :hasGroups
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/many
+  :db.install/_attribute :db.part/db
+  :db/doc "A role-in-group's reference to a group"}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :hasRoles
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/many
+  :db.install/_attribute :db.part/db
+  :db/doc "A role-in-group's reference to a role"}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :canHaves
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/many
+  :db.install/_attribute :db.part/db
+  :db/doc "A group's reference to a role"}
+ 
+
+;; nodes
+ {:db/id #db/id [:db.part/user]
+  :user/name "Adminuser1"}
+ {:db/id #db/id [:db.part/user]
+  :user/name "Stduser1"}
+ {:db/id #db/id [:db.part/user]
+  :role/name "Std"}
+ {:db/id #db/id [:db.part/user]
+  :role/name "Admin"}
+ {:db/id #db/id [:db.part/user]
+  :group/name "Admins"}
+ {:db/id #db/id [:db.part/user]
+  :group/name "Standard"}
+ {:db/id #db/id [:db.part/user]
+  :roleInGroup/name "U2G2R34"}
+ {:db/id #db/id [:db.part/user]
+  :roleInGroup/name "U1G2R23"}
+
+;; edges
+ {:db/id [:roleInGroup/name "Adminuser1Admins"]
+  :_hasRoleInGroups [:user/name "Stduser1"]
+  :hasGroups #{[:group/name "Admins"]}
+  :hasRoles #{[:role/name "Admins"]
+              [:role/name "Standard"]}}
+ {:db/id [:roleInGroup/name "Stduser1Standard"]
+  :_hasRoleInGroups [:user/name "Stduser1"]
+  :hasGroups #{[:group/name "Standard"]}
+  :hasRoles #{[:role/name "Standard"]}}
+]
+
+
+;; done: generalized expresssions "Welcome to __X__", users, google translations
+;; todo:
+;; future: matches (might only need list of already used translations), replacement chains (is this a set of consecutive expressions?, can be derived from srt sequence), translation proposals (does probably not need exist as state, as it is either accepted or not accepted)
+;; default replacements (should be derived by algorithm instead), feedback from manual corrections (done by translation source)
