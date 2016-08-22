@@ -1,0 +1,7 @@
+[
+;; languages
+ {:db/id #db/id[:db.part/user]
+  :language/name "Norsk Bokmaal" :language/code "nb_NO"}
+ {:db/id #db/id[:db.part/user]
+  :language/name "English US"  :language/code "en_US"}
+ ]

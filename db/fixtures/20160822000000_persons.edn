@@ -1,0 +1,7 @@
+[
+;; nodes
+ {:db/id #db/id[:db.part/user]
+  :person/name "Adminuser1" :person/email "adm1@menneskemaskin.no"}
+ {:db/id #db/id[:db.part/user]
+  :person/name "Stduser1"  :person/email "std1@menneskemaskin.no"}
+ ]

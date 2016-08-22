@@ -82,53 +82,70 @@ The memory database is an in-memory implementation of the entire Datomic stack (
 
 To test, run ```lein repl```:
 ```
-;; Import the Datomic Peer library (usable as 'Peer' from here on)
-(import datomic.Peer)
-
-;; Create the in memory database, calling the static class method Peer#createDatabase
-(def uri "datomic:mem://hello")
-(Peer/createDatabase uri)
-
-;; Create a "connection" to the database
-(def conn (Peer/connect uri))
-
-
-;; Create a datom to describe the first bits of data we're entering into the DB:
-(def datom ["db/add" (Peer/tempid "db.part/user") "db/doc" "hello world"])
-
-;; Pass the datom to the transactor via the connection (note the 'vector of vectors' for the datom):
-(def resp (.transact conn [datom]))
-```
-
-Or:
-```
 ;; use the Datomic native Clojure library
-datomic-tutorial.core=> (require 'datomic.api)
+methodius.core=> (require 'datomic.api)
 nil
-;; a basic in memory datomic database, called 'hello'
-datomic-tutorial.core=> (def uri "datomic:mem://hello")
-#'datomic-tutorial.core/uri
+;; a basic in memory datomic database, called 'methodius'
+methodius.core=> (def uri "datomic:mem://methodius")
+#'methodius.core/uri
 ;; ... is created
-datomic-tutorial.core=> (datomic.api/create-database uri)
+methodius.core=> (datomic.api/create-database uri)
 true
 ;; connect to the database
-datomic-tutorial.core=> (def conn (datomic.api/connect uri))
-#'datomic-tutorial.core/conn
+methodius.core=> (def conn (datomic.api/connect uri))
+#'methodius.core/conn
 ;; a datom "adds a fact, about a new entity with this temporary id, and asserts that the attribute db/doc has the value hello world"
-datomic-tutorial.core=> (def datom ["db/add" (datomic.api/tempid "db.part/user") "db/doc" "hello world"])
-#'datomic-tutorial.core/datom
-;; commit the fact via the Datomic transactor
-datomic-tutorial.core=> (def resp (datomic.api/transact conn [datom]))
-#'datomic-tutorial.core/resp
-datomic-tutorial.core=> resp
-#<promise$settable_future$reify__5376@b443e92: {:db-before datomic.db.Db@b515b169, :db-after datomic.db.Db@f20dfecc, :tx-data [#datom[13194139534312 50 #inst "2015-06-02T12:23:58.409-00:00" 13194139534312 true] #datom[17592186045417 62 "hello world" 13194139534312 true]], :tempids {-9223350046623220288 17592186045417}}>
-;; this query "finds entities where we specify entities as an entity has the attribute db/doc with value hello world"
-datomic-tutorial.core=> (def query "[:find ?entity :where [?entity :db/doc \"hello world\"]]")
-#'datomic-tutorial.core/query
-;; run the query against the 'db' snapshot as input, which we get from the connection
-datomic-tutorial.core=> (def result (datomic.api/q query (datomic.api/db conn)))
-#'datomic-tutorial.core/result
-;; one result; the one we added
-datomic-tutorial.core=> result
-#{[17592186045417]}
+#'methodius.core/query
 ```
+
+;; Create users schema
+```
+(def schema-tx (read-string (slurp "db/schema/20160822000000_users.edn")))
+(use '[datomic.api :only [q db] :as d])
+(d/transact conn schema-tx)
+
+;; Create users data
+(def data-tx (read-string (slurp "db/fixtures/20160822000000_users.edn")))
+(d/transact conn data-tx)
+
+(d/transact conn [{:db/id #db/id[:db.part/user] :user/name "adam" :user/email "adam@junkey.com"}])
+
+;; Now that there's a record in the database, you can query the database to retrieve records:
+(d/q '[:find ?e ?name
+  :where
+  [?e :user/name ?name]
+] (d/db (d/connect uri)))
+
+(d/q '[:find ?e ?name ?email
+  :where
+  [?e :user/email "adm1@menneskemaskin.no"]
+  [?e :user/name ?name]
+  [?e :user/email ?email]
+] (d/db (d/connect uri)))
+
+(def query "[:find ?entity :where [?entity :db/doc \"methodius\"]]")
+
+;; Get schema
+(defn get-user-schema [conn]
+  (d/q '[:find ?id
+         :where [?e :db/ident ?id]
+                [_ :db.install/attribute ?e]]
+       (d/db conn)))
+(get-user-schema conn)
+
+;; Inspect schema
+(def system-ns #{"db" "db.type" "db.install" "db.part" 
+                 "db.lang" "fressian" "db.unique" "db.excise" 
+                 "db.cardinality" "db.fn"})
+
+(d/q '[:find ?e ?ident
+   :in $ ?system-ns
+   :where
+   [?e :db/ident ?ident]
+   [(namespace ?ident) ?ns]
+   [((comp not contains?) ?system-ns ?ns)]]
+ (d/db conn) system-ns)
+
+
+; example single insert user
+@(d/transact conn [{:db/id #db/id[:db.part/user] :user/name "adam" :user/email "adam@junkey.com"}])
