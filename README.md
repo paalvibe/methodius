@@ -177,5 +177,9 @@ methodius.core=> (def conn (datomic.api/connect uri))
 ## How to run persistant dev db locally:
 ```
 cd dev/software/datomic/datomic-pro-0.9.5359/ # or wherever you have stored datomic
-
+bin/transactor paalvibe-dev-transactor-template.properties ; remember to set license key
+```
+Use datomic uri with dev reference:
+```
+(def uri "datomic:dev://localhost:4334/methodius")
 ```

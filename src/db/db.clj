@@ -19,7 +19,8 @@
         files (.listFiles file)]
   (doseq [x files]
     (when (.isFile x)
-      (let [data (slurp (.getCanonicalPath x))]
+      (let [data (read-string (slurp (.getCanonicalPath x)))]
+        (println x)
         (println data)
         (f data))))))
 
