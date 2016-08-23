@@ -1,7 +1,13 @@
-(ns methodius.mem)
+(ns methodius.mem
+  (:require [methodius.out :refer [info]]
+            [db.db :as db]))
 
 (defn resetmem! [options]
-  (println "todo"))
+  (info "Resetting db")
+  (db/reset-db)
+  (info "Done..."))
 
 (defn growmem! [options]
-  (println "todo"))
+  (info "Resetting db")
+  (info "TODO")
+  (info "Done..."))

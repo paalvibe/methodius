@@ -8,6 +8,10 @@ lein run growmem some_directory_with_en_and_nb_srts
 lein run resetmem
 lein run translate some_english.srt
 ```
+Run standalone (not yet connected with tasks):
+```
+java -jar target/uberjar/methodius-0.1.0-SNAPSHOT-standalone.jar 
+```
 
 ## Installing datomic
 
@@ -86,6 +90,7 @@ To test, run ```lein repl```:
 methodius.core=> (require 'datomic.api)
 nil
 ;; a basic in memory datomic database, called 'methodius'
+;; alternative is dev which is local durable storage (as opposed to mem)
 methodius.core=> (def uri "datomic:mem://methodius")
 #'methodius.core/uri
 ;; ... is created
@@ -123,7 +128,25 @@ methodius.core=> (def conn (datomic.api/connect uri))
   [?e :user/email ?email]
 ] (d/db (d/connect uri)))
 
-(def query "[:find ?entity :where [?entity :db/doc \"methodius\"]]")
+(d/q '[:find ?e ?email ?name
+  :where
+  [?e :user/name ?name]
+  [?e :user/email ?email]
+] (d/db (d/connect uri)))
+
+(def result (d/q '[:find ?e
+  :where
+  [?e :user/name ?name]
+  [?e :user/email ?email]
+] (d/db (d/connect uri))))
+#{[17592186045418] [17592186045421]}
+
+; Get entity of result
+(datomic.api/entity (db conn) (first (first result)))
+{:db/id 17592186045418}
+
+(get (datomic.api/entity (db conn) (first (first result))) :user/name)
+"adam"
 
 ;; Get schema
 (defn get-user-schema [conn]
@@ -149,3 +172,10 @@ methodius.core=> (def conn (datomic.api/connect uri))
 
 ; example single insert user
 @(d/transact conn [{:db/id #db/id[:db.part/user] :user/name "adam" :user/email "adam@junkey.com"}])
+
+
+## How to run persistant dev db locally:
+```
+cd dev/software/datomic/datomic-pro-0.9.5359/ # or wherever you have stored datomic
+
+```

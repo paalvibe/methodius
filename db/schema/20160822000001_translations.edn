@@ -30,7 +30,6 @@
   :db/ident :movie/id
   :db/valueType :db.type/uuid
   :db/cardinality :db.cardinality/one
-  :db/unique :db.unique/identity
   :db/index true
   :db/doc "A unique ID for each movie"
   :db.install/_attribute :db.part/db}
@@ -38,6 +37,7 @@
  {:db/id #db/id[:db.part/db]
   :db/ident :movie/name
   :db/valueType :db.type/string
+  :db/fulltext true
   :db/cardinality :db.cardinality/one
   :db/unique :db.unique/value
   :db/index true
@@ -98,6 +98,7 @@
  {:db/id #db/id[:db.part/db]
   :db/ident :slide/text
   :db/valueType :db.type/string
+  :db/fulltext true
   :db/cardinality :db.cardinality/one
   :db/doc "The full text of this slide"
   :db.install/_attribute :db.part/db}
@@ -150,6 +151,7 @@
  {:db/id #db/id[:db.part/db]
   :db/ident :expression/text
   :db/valueType :db.type/string
+  :db/fulltext true
   :db/cardinality :db.cardinality/one
   :db/doc "The full text of this expression"
   :db.install/_attribute :db.part/db}
@@ -190,6 +192,8 @@
  {:db/id #db/id[:db.part/db]
   :db/ident :generalizedExpression/text
   :db/valueType :db.type/string
+  :db/fulltext true
+  :db/unique :db.unique/identity
   :db/cardinality :db.cardinality/one
   :db/doc "The full text of this generalized expression including placeholder"
   :db.install/_attribute :db.part/db}
@@ -197,7 +201,6 @@
 ]
 
 ;; An expressionTranslation is a translation of single expression.
- ;; stringLink attributes
  {:db/id #db/id[:db.part/db]
   :db/ident :expressionTranslation/id
   :db/valueType :db.type/uuid
@@ -224,6 +227,7 @@
  {:db/id #db/id[:db.part/db]
   :db/ident :expressionTranslation/fromText
   :db/valueType :db.type/string
+  :db/fulltext true
   :db/cardinality :db.cardinality/one
   :db/doc "The from text of this translation"
   :db.install/_attribute :db.part/db}
@@ -231,20 +235,14 @@
  {:db/id #db/id[:db.part/db]
   :db/ident :expressionTranslation/toText
   :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db/doc "The to text of this translation"
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :expressionTranslation/toText
-  :db/valueType :db.type/string
+  :db/fulltext true
   :db/cardinality :db.cardinality/one
   :db/doc "The to text of this translation"
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
   :db/ident :expressionTranslation/previousTranslationSource
-  :db/valueType :db.type/string
+  :db/valueType :db.type/ref
   :db/cardinality :db.cardinality/one
   :db/doc "The previous translation this was taken from, nil if none"
   :db.install/_attribute :db.part/db}
@@ -258,7 +256,6 @@
 
 ;; An expressionTranslationSource is the source of a translation of single expression.
 ;; Can be manually approved, google translation.
- ;; stringLink attributes
  {:db/id #db/id[:db.part/db]
   :db/ident :expressionTranslationSource/translationOrigin
   :db/valueType :db.type/ref

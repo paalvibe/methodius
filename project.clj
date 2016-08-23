@@ -1,4 +1,4 @@
-(defproject bmp "0.1.0-SNAPSHOT"
+(defproject methodius "0.1.0-SNAPSHOT"
   :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
                                  :creds :gpg}}
   :description "FIXME: write description"
